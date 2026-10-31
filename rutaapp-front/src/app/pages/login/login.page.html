@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Iniciar sesión</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h2>Hola de nuevo</h2>
+  <p>Ingresa a tu cuenta de RutaApp.</p>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <ion-input label="Correo o teléfono" labelPlacement="floating" fill="outline"
+      formControlName="login"></ion-input>
+    @if (invalid('login')) { <ion-text color="danger"><small>Ingresa tu correo o teléfono</small></ion-text> }
+
+    <ion-input class="ion-margin-top" label="Contraseña" labelPlacement="floating"
+      fill="outline" type="password" formControlName="password"></ion-input>
+    @if (invalid('password')) { <ion-text color="danger"><small>Ingresa tu contraseña</small></ion-text> }
+
+    @if (errorMessage()) {
+      <p><ion-text color="danger">{{ errorMessage() }}</ion-text></p>
+    }
+
+    <ion-button class="ion-margin-top" expand="block" type="submit" [disabled]="loading()">
+      @if (loading()) { <ion-spinner name="dots"></ion-spinner> } @else { Iniciar sesión }
+    </ion-button>
+
+    <ion-button class="ion-margin-top" expand="block" fill="clear" type="button" (click)="goToRegister()">
+      ¿No tienes cuenta? Regístrate
+    </ion-button>
+  </form>
+</ion-content>

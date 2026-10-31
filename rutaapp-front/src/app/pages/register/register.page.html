@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Crear cuenta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h2>Bienvenido a RutaApp</h2>
+  <p>Regístrate para solicitar tus viajes.</p>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <ion-input label="Nombre completo" labelPlacement="floating" fill="outline"
+      formControlName="name"></ion-input>
+    @if (invalid('name')) { <ion-text color="danger"><small>El nombre es obligatorio</small></ion-text> }
+
+    <ion-input class="ion-margin-top" label="Correo electrónico" labelPlacement="floating"
+      fill="outline" type="email" formControlName="email"></ion-input>
+    @if (invalid('email')) { <ion-text color="danger"><small>Ingresa un correo válido</small></ion-text> }
+    @if (serverErrors()['email']) { <ion-text color="danger"><small>{{ serverErrors()['email'][0] }}</small></ion-text> }
+
+    <ion-input class="ion-margin-top" label="Teléfono (10 dígitos)" labelPlacement="floating"
+      fill="outline" type="tel" formControlName="phone"></ion-input>
+    @if (invalid('phone')) { <ion-text color="danger"><small>Ingresa un teléfono de 10 dígitos</small></ion-text> }
+    @if (serverErrors()['phone']) { <ion-text color="danger"><small>{{ serverErrors()['phone'][0] }}</small></ion-text> }
+
+    <ion-input class="ion-margin-top" label="Contraseña" labelPlacement="floating"
+      fill="outline" type="password" formControlName="password"></ion-input>
+    @if (invalid('password')) { <ion-text color="danger"><small>Mínimo 8 caracteres</small></ion-text> }
+
+    @if (errorMessage()) {
+      <p><ion-text color="danger">{{ errorMessage() }}</ion-text></p>
+    }
+
+    <ion-button class="ion-margin-top" expand="block" type="submit" [disabled]="loading()">
+      @if (loading()) { <ion-spinner name="dots"></ion-spinner> } @else { Registrarme }
+    </ion-button>
+  </form>
+</ion-content>

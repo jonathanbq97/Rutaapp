@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>RutaApp</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">Salir</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h2>¿A dónde vamos?</h2>
+  <p>Elige tu origen y tu destino para ver el precio aproximado.</p>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <ion-select label="Origen" labelPlacement="floating" fill="outline"
+      interface="popover" formControlName="origin">
+      @for (p of places; track p.name) {
+        <ion-select-option [value]="p.name">{{ p.name }}</ion-select-option>
+      }
+    </ion-select>
+    @if (invalid('origin')) { <ion-text color="danger"><small>Selecciona el origen</small></ion-text> }
+
+    <ion-select class="ion-margin-top" label="Destino" labelPlacement="floating" fill="outline"
+      interface="popover" formControlName="destination">
+      @for (p of places; track p.name) {
+        <ion-select-option [value]="p.name">{{ p.name }}</ion-select-option>
+      }
+    </ion-select>
+    @if (invalid('destination')) { <ion-text color="danger"><small>Selecciona el destino</small></ion-text> }
+
+    @if (errorMessage()) {
+      <p><ion-text color="danger">{{ errorMessage() }}</ion-text></p>
+    }
+
+    <ion-button class="ion-margin-top" expand="block" type="submit" [disabled]="loading()">
+      @if (loading()) { <ion-spinner name="dots"></ion-spinner> } @else { Ver tarifa estimada }
+    </ion-button>
+  </form>
+
+  @if (estimate(); as e) {
+    <ion-card class="ion-margin-top">
+      <ion-card-content>
+        <h1>$ {{ e.estimated_fare | number }} {{ e.currency }}</h1>
+        <p>Distancia aproximada: {{ e.distance_km }} km</p>
+        <p>Duración aproximada: {{ e.duration_min }} min</p>
+      </ion-card-content>
+    </ion-card>
+  }
+</ion-content>
