@@ -1,0 +1,103 @@
+<ion-content [fullscreen]="true">
+  <div class="trip">
+    <div class="topbar">
+      <div>
+        <p class="hello">Mi viaje</p>
+        <h1 class="brand">Ruta<span>App</span></h1>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="left">
+        @if (loading()) {
+          <div class="glass center"><ion-spinner name="dots"></ion-spinner></div>
+        } @else if (!hasActive()) {
+          @if (toRate(); as t) {
+            <div class="glass">
+              <h2>¿Cómo te fue con {{ t.driver?.user?.name }}?</h2>
+              <p class="muted">{{ endedMessage() }}</p>
+              <app-rating-form [tripId]="t.id" (rated)="onRated()" />
+              <ion-button fill="clear" expand="block" (click)="goTrips()">Ver mis viajes</ion-button>
+            </div>
+          } @else {
+            <div class="glass">
+              <h2>No tienes un viaje activo</h2>
+              <p class="muted">{{ endedMessage() }}</p>
+              <ion-button expand="block" (click)="goRequest()">Solicitar un viaje</ion-button>
+            </div>
+          }
+        } @else {
+          @if (data(); as d) {
+            <div class="glass">
+              <span class="badge" [attr.data-status]="d.status">{{ statusLabel() }}</span>
+
+              @if (d.origin_name) {
+                <div class="row"><span class="dot origin"></span><span>{{ d.origin_name }}</span></div>
+              }
+              @if (d.destination_name) {
+                <div class="row"><span class="dot dest"></span><span>{{ d.destination_name }}</span></div>
+              }
+
+              <p class="muted">Tarifa estimada</p>
+              <h3 class="price">$ {{ d.estimated_fare | number }} <small>COP</small></h3>
+              <p class="muted">
+                @if (type() === 'request') { Solicitud #{{ d.id }} } @else { Viaje #{{ d.id }} }
+              </p>
+            </div>
+
+            @if (type() === 'trip' && d.driver) {
+              <div class="glass">
+                <h2>Tu conductor</h2>
+                <p class="strong">{{ d.driver.user?.name }}</p>
+                <p class="muted">⭐ {{ d.driver.rating_average }} · 📞 {{ d.driver.user?.phone }}</p>
+
+                @if (d.vehicle; as v) {
+                  <div class="vehicle">
+                    <span class="plate">{{ v.plate }}</span>
+                    <span>{{ v.brand }} {{ v.model }} · {{ v.color }}</span>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (cancellable()) {
+              <div class="glass">
+                @if (!confirming()) {
+                  <ion-button expand="block" fill="outline" color="danger" (click)="askCancel()">
+                    Cancelar viaje
+                  </ion-button>
+                } @else {
+                  <h2>¿Cancelar el viaje?</h2>
+                  <p class="muted">Cuéntanos el motivo (opcional).</p>
+                  <ion-input label="Motivo" labelPlacement="floating" fill="outline"
+                    [value]="reason()" (ionInput)="reason.set($any($event).detail.value || '')"></ion-input>
+                  <ion-button class="ion-margin-top" expand="block" color="danger" [disabled]="cancelling()"
+                    (click)="confirmCancel()">
+                    @if (cancelling()) { <ion-spinner name="dots"></ion-spinner> } @else { Sí, cancelar }
+                  </ion-button>
+                  <ion-button fill="clear" expand="block" (click)="keepTrip()">No, seguir con el viaje</ion-button>
+                }
+                @if (cancelMessage()) { <p class="msg err">{{ cancelMessage() }}</p> }
+              </div>
+            }
+          }
+
+          @if (errorMessage()) {
+            <p class="msg">{{ errorMessage() }}</p>
+          }
+        }
+      </div>
+
+      <div class="right">
+        <div class="glass map-card">
+          <app-map-picker
+            [origin]="origin()"
+            [destination]="destination()"
+            [driver]="driverPoint()"
+            [centerOnMe]="false"
+          ></app-map-picker>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

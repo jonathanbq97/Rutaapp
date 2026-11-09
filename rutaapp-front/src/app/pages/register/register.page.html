@@ -1,38 +1,51 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Crear cuenta</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true">
+  <div class="auth-screen">
+    <div class="auth-card" [class.wide]="role() === 'driver'">
+      <h1 class="auth-brand">Ruta<span>App</span></h1>
+      <p class="auth-subtitle">Crea tu cuenta</p>
 
-<ion-content class="ion-padding">
-  <h2>Bienvenido a RutaApp</h2>
-  <p>Regístrate para solicitar tus viajes.</p>
+      <div class="role-switch">
+        <button type="button" [class.on]="role() === 'client'" (click)="setRole('client')">
+          🧍 Soy pasajero
+        </button>
+        <button type="button" [class.on]="role() === 'driver'" (click)="setRole('driver')">
+          🚗 Soy conductor
+        </button>
+      </div>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <ion-input label="Nombre completo" labelPlacement="floating" fill="outline"
-      formControlName="name"></ion-input>
-    @if (invalid('name')) { <ion-text color="danger"><small>El nombre es obligatorio</small></ion-text> }
+      <p class="auth-text">
+        @if (role() === 'driver') {
+          Cuéntanos de ti y de tu vehículo. Un administrador aprobará tu cuenta.
+        } @else {
+          Regístrate para solicitar tus viajes.
+        }
+      </p>
 
-    <ion-input class="ion-margin-top" label="Correo electrónico" labelPlacement="floating"
-      fill="outline" type="email" formControlName="email"></ion-input>
-    @if (invalid('email')) { <ion-text color="danger"><small>Ingresa un correo válido</small></ion-text> }
-    @if (serverErrors()['email']) { <ion-text color="danger"><small>{{ serverErrors()['email'][0] }}</small></ion-text> }
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="grid">
+          @for (f of fields(); track f.name) {
+            <div class="cell">
+              <ion-input [label]="f.label" labelPlacement="floating" fill="outline"
+                [type]="f.type" [formControlName]="f.name"></ion-input>
+              @if (error(f); as msg) {
+                <ion-text color="danger"><small>{{ msg }}</small></ion-text>
+              }
+            </div>
+          }
+        </div>
 
-    <ion-input class="ion-margin-top" label="Teléfono (10 dígitos)" labelPlacement="floating"
-      fill="outline" type="tel" formControlName="phone"></ion-input>
-    @if (invalid('phone')) { <ion-text color="danger"><small>Ingresa un teléfono de 10 dígitos</small></ion-text> }
-    @if (serverErrors()['phone']) { <ion-text color="danger"><small>{{ serverErrors()['phone'][0] }}</small></ion-text> }
+        @if (errorMessage()) {
+          <p><ion-text color="danger">{{ errorMessage() }}</ion-text></p>
+        }
 
-    <ion-input class="ion-margin-top" label="Contraseña" labelPlacement="floating"
-      fill="outline" type="password" formControlName="password"></ion-input>
-    @if (invalid('password')) { <ion-text color="danger"><small>Mínimo 8 caracteres</small></ion-text> }
+        <ion-button class="ion-margin-top" expand="block" type="submit" [disabled]="loading()">
+          @if (loading()) { <ion-spinner name="dots"></ion-spinner> } @else { Registrarme }
+        </ion-button>
+      </form>
 
-    @if (errorMessage()) {
-      <p><ion-text color="danger">{{ errorMessage() }}</ion-text></p>
-    }
-
-    <ion-button class="ion-margin-top" expand="block" type="submit" [disabled]="loading()">
-      @if (loading()) { <ion-spinner name="dots"></ion-spinner> } @else { Registrarme }
-    </ion-button>
-  </form>
+      <p class="auth-footer">
+        ¿Ya tienes cuenta? <a (click)="goToLogin()">Inicia sesión</a>
+      </p>
+    </div>
+  </div>
 </ion-content>

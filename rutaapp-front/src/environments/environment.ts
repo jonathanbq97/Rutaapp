@@ -1,14 +1,14 @@
-
-
-//export const environment = {
-//  production: false,
-  // En casa: backend falso. En clase: cambiar por http://IP_DEL_PROFESOR:8000/api
- // apiUrl: 'http://localhost:8000/api',
-//};
-
 export const environment = {
   production: false,
-  // Backend del profesor (clase)
-  apiUrl: 'http://20.20.2.171:8000/api',
-  // Backend falso (casa): http://localhost:8000/api
+
+  // ACTIVA SOLO UNA de las tres líneas (borra el // de la que uses):
+
+  // 1) Pruebas en el PC, en casa (backend falso en tu mismo computador)
+  apiUrl: 'http://localhost:8000/api',
+
+  // 2) Pruebas desde el celular: la IP actual de tu PC (mírala con ipconfig)
+  // apiUrl: 'http://10.131.198.98:8000/api',
+
+  // 3) Backend del profesor, en clase
+  // apiUrl: 'http://20.20.1.42:8000/api',
 };

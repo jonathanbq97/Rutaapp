@@ -1,27 +1,244 @@
-#container {
+.home {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 110px) 20px 32px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.hello {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.brand {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -1px;
+
+  span {
+    color: #3b82f6;
+  }
+}
+
+/* Dos columnas: formulario a la izquierda, mapa a la derecha */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.glass {
+  margin-bottom: 18px;
+  padding: 26px 20px 20px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 40px rgba(47, 107, 255, 0.2),
+    inset 0 0 30px rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+
+  h2 {
+    margin: 0 0 4px;
+    font-size: 22px;
+    font-weight: 700;
+  }
+}
+
+.map-card {
+  height: 100%;
+  margin-bottom: 0;
+  padding: 10px;
+}
+
+.muted {
+  margin: 0 0 18px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.result {
   text-align: center;
 
+  .muted {
+    margin-bottom: 6px;
+  }
+}
+
+.price {
+  margin: 0 0 14px;
+  font-size: 38px;
+  font-weight: 800;
+  color: #60a5fa;
+
+  small {
+    font-size: 14px;
+    opacity: 0.7;
+  }
+}
+
+.chips {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+/* La tarjeta de la izquierda se estira hasta la altura del mapa */
+.left {
+  display: flex;
+  flex-direction: column;
+
+  .glass:first-child {
+    flex: 1;
+  }
+
+  .glass:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Filas de origen y destino */
+.point {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  &.active {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  }
+}
+
+.dot {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+
+  &.origin {
+    background: #2f6bff;
+  }
+
+  &.dest {
+    background: #ff7a1a;
+  }
+}
+
+.point-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  small {
+    opacity: 0.65;
+  }
+
+  strong {
+    font-size: 14px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.center {
+  text-align: center;
+}
+
+.addr {
+  margin: -4px 0 14px;
+}
+
+.sent {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+
+  p {
+    margin: 0;
+  }
+
+  .muted {
+    margin-top: 4px;
+  }
+}
+
+/* Aviso sobre el mapa */
+.map-card {
+  position: relative;
+}
+
+.map-hint {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 22px;
+  left: 50%;
+  z-index: 1100;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 90%;
+  padding: 10px 16px;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 999px;
+  background: rgba(10, 18, 40, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+.hint-dot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+
+  &.origin {
+    background: #2f6bff;
+  }
+
+  &.dest {
+    background: #ff7a1a;
+  }
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
+/* Celular real: una sola columna, mapa debajo */
+@media (max-width: 700px) {
+  .home {
+    max-width: 480px;
+  }
 
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
+  .layout {
+    grid-template-columns: 1fr;
+  }
 }

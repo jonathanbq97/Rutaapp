@@ -1,49 +1,111 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>RutaApp</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="logout()">Salir</ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true">
+  <div class="home">
+    <div class="topbar">
+      <div>
+        <p class="hello">Hola, {{ userName }}</p>
+        <h1 class="brand">Ruta<span>App</span></h1>
+      </div>
+      <ion-button fill="clear" size="small" (click)="logout()">Salir</ion-button>
+    </div>
 
-<ion-content class="ion-padding">
-  <h2>¿A dónde vamos?</h2>
-  <p>Elige tu origen y tu destino para ver el precio aproximado.</p>
+    <div class="layout">
+      <div class="left">
+        <div class="glass">
+          <h2>¿A dónde vamos?</h2>
+          <p class="muted">Escribe las direcciones y el mapa las ubica solo.</p>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <ion-select label="Origen" labelPlacement="floating" fill="outline"
-      interface="popover" formControlName="origin">
-      @for (p of places; track p.name) {
-        <ion-select-option [value]="p.name">{{ p.name }}</ion-select-option>
-      }
-    </ion-select>
-    @if (invalid('origin')) { <ion-text color="danger"><small>Selecciona el origen</small></ion-text> }
+          @if (locationMessage()) {
+            <p><ion-text color="warning"><small>{{ locationMessage() }}</small></ion-text></p>
+          }
 
-    <ion-select class="ion-margin-top" label="Destino" labelPlacement="floating" fill="outline"
-      interface="popover" formControlName="destination">
-      @for (p of places; track p.name) {
-        <ion-select-option [value]="p.name">{{ p.name }}</ion-select-option>
-      }
-    </ion-select>
-    @if (invalid('destination')) { <ion-text color="danger"><small>Selecciona el destino</small></ion-text> }
+          <!-- ORIGEN -->
+          <div class="field">
+            <div class="field-label"><span class="dot origin"></span> Origen</div>
+            <ion-input fill="outline" placeholder="Detectando tu ubicación… o escribe una dirección"
+              [value]="originText()"
+              (ionInput)="onType('origin', $any($event).detail.value)"
+              (keyup.enter)="find('origin')"
+              (ionBlur)="onBlur('origin')"></ion-input>
+            @if (originFromGps() && status().origin === 'found') {
+              <small class="status ok">📍 Tu ubicación actual. Puedes corregir la dirección aquí mismo.</small>
+            } @else {
+              @switch (status().origin) {
+                @case ('searching') { <small class="status">Buscando en el mapa…</small> }
+                @case ('found') { <small class="status ok">✔ Ubicado en el mapa</small> }
+                @case ('approx') {
+                  <small class="status warn">Ubicado por la calle o el barrio (el mapa no tiene ese número)</small>
+                }
+                @case ('notfound') {
+                  <small class="status err">No encontramos ese lugar en Neiva. Revisa cómo lo escribiste.</small>
+                }
+              }
+            }
+          </div>
 
-    @if (errorMessage()) {
-      <p><ion-text color="danger">{{ errorMessage() }}</ion-text></p>
-    }
+          <!-- DESTINO -->
+          <div class="field">
+            <div class="field-label"><span class="dot dest"></span> Destino</div>
+            <ion-input fill="outline" placeholder="Ej: Universidad Surcolombiana"
+              [value]="destinationText()"
+              (ionInput)="onType('destination', $any($event).detail.value)"
+              (keyup.enter)="find('destination')"
+              (ionBlur)="onBlur('destination')"></ion-input>
+            @switch (status().destination) {
+              @case ('searching') { <small class="status">Buscando en el mapa…</small> }
+              @case ('found') { <small class="status ok">✔ Ubicado en el mapa</small> }
+              @case ('approx') {
+                <small class="status warn">Ubicado por la calle o el barrio (el mapa no tiene ese número)</small>
+              }
+              @case ('notfound') {
+                <small class="status err">No encontramos ese lugar en Neiva. Revisa cómo lo escribiste.</small>
+              }
+            }
+          </div>
 
-    <ion-button class="ion-margin-top" expand="block" type="submit" [disabled]="loading()">
-      @if (loading()) { <ion-spinner name="dots"></ion-spinner> } @else { Ver tarifa estimada }
-    </ion-button>
-  </form>
+          @if (loading()) {
+            <p class="center"><ion-spinner name="dots"></ion-spinner></p>
+          }
+          @if (errorMessage()) {
+            <p><ion-text color="danger">{{ errorMessage() }}</ion-text></p>
+          }
 
-  @if (estimate(); as e) {
-    <ion-card class="ion-margin-top">
-      <ion-card-content>
-        <h1>$ {{ e.estimated_fare | number }} {{ e.currency }}</h1>
-        <p>Distancia aproximada: {{ e.distance_km }} km</p>
-        <p>Duración aproximada: {{ e.duration_min }} min</p>
-      </ion-card-content>
-    </ion-card>
-  }
+          <ion-button fill="clear" expand="block" (click)="reset()">Limpiar</ion-button>
+        </div>
+
+        @if (estimate(); as e) {
+          <div class="glass result">
+            <p class="muted">Tarifa estimada</p>
+            <h3 class="price">$ {{ e.estimated_fare | number }} <small>{{ e.currency }}</small></h3>
+            <div class="chips">
+              <span class="chip">📍 {{ e.distance_km }} km</span>
+              <span class="chip">⏱ {{ e.duration_min }} min</span>
+            </div>
+
+            @if (rideRequest(); as r) {
+              <div class="sent">
+                <p><strong>✅ Solicitud enviada</strong></p>
+                <p class="muted">Solicitud #{{ r.id }} · estado: {{ r.status }}<br />Buscando conductores disponibles…</p>
+              </div>
+            } @else {
+              <ion-button class="ion-margin-top" expand="block" [disabled]="requesting()"
+                (click)="requestRide()">
+                @if (requesting()) { <ion-spinner name="dots"></ion-spinner> } @else { Solicitar viaje }
+              </ion-button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="right">
+        <div class="glass map-card">
+          <app-map-picker
+            [origin]="origin()"
+            [destination]="destination()"
+            (locationFound)="onMyLocation($event)"
+            (locationError)="onLocationError($event)"
+          ></app-map-picker>
+        </div>
+      </div>
+    </div>
+  </div>
 </ion-content>

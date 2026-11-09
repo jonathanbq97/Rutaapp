@@ -1,0 +1,160 @@
+.trip {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 110px) 20px 32px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.hello {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.brand {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -1px;
+
+  span {
+    color: #3b82f6;
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.glass {
+  margin-bottom: 18px;
+  padding: 26px 20px 20px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 40px rgba(47, 107, 255, 0.2),
+    inset 0 0 30px rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+
+  h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    font-weight: 700;
+  }
+}
+
+.map-card {
+  height: 100%;
+  margin-bottom: 0;
+  padding: 10px;
+}
+
+.center {
+  text-align: center;
+}
+
+.muted {
+  margin: 0 0 14px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.strong {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 999px;
+  background: rgba(47, 107, 255, 0.25);
+  border: 1px solid rgba(96, 165, 250, 0.6);
+
+  &[data-status='assigned'],
+  &[data-status='driver_arrived'] {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: rgba(74, 222, 128, 0.6);
+  }
+
+  &[data-status='in_progress'] {
+    background: rgba(255, 122, 26, 0.2);
+    border-color: rgba(255, 160, 90, 0.7);
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.dot {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+
+  &.origin {
+    background: #2f6bff;
+  }
+
+  &.dest {
+    background: #ff7a1a;
+  }
+}
+
+.price {
+  margin: 0 0 8px;
+  font-size: 34px;
+  font-weight: 800;
+  color: #60a5fa;
+
+  small {
+    font-size: 14px;
+    opacity: 0.7;
+  }
+}
+
+.vehicle {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.plate {
+  align-self: flex-start;
+  padding: 4px 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #0a1228;
+  border-radius: 8px;
+  background: #fbbf24;
+}
+
+@media (max-width: 700px) {
+  .trip {
+    max-width: 480px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}

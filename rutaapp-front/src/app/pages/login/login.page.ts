@@ -1,10 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import {
-  IonContent, IonHeader, IonTitle, IonToolbar,
-  IonInput, IonButton, IonText, IonSpinner,
-} from '@ionic/angular';
+import { IonContent, IonInput, IonButton, IonText, IonSpinner } from '@ionic/angular';
 import { AuthService } from '../../services/auth';
 
 @Component({
@@ -12,11 +9,7 @@ import { AuthService } from '../../services/auth';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    IonContent, IonHeader, IonTitle, IonToolbar,
-    IonInput, IonButton, IonText, IonSpinner,
-  ],
+  imports: [ReactiveFormsModule, IonContent, IonInput, IonButton, IonText, IonSpinner],
 })
 export class LoginPage {
   private fb = inject(FormBuilder);
@@ -48,14 +41,17 @@ export class LoginPage {
     const { login, password } = this.form.getRawValue();
 
     this.auth.login(login!, password!).subscribe({
-      next: () => {
+      next: (res) => {
         this.loading.set(false);
-        this.router.navigateByUrl('/home');
+        // Cada rol entra a su propio panel
+        this.router.navigateByUrl(this.auth.homeFor(res.user.role));
       },
       error: (err) => {
         this.loading.set(false);
         if (err.status === 401) {
           this.errorMessage.set('Correo o contraseña incorrectos.');
+        } else if (err.status === 403) {
+          this.errorMessage.set(err.error?.message || 'Tu cuenta está inactiva o suspendida.');
         } else if (err.status === 422) {
           this.errorMessage.set('Completa todos los campos.');
         } else {
@@ -67,5 +63,9 @@ export class LoginPage {
 
   goToRegister() {
     this.router.navigateByUrl('/register');
+  }
+
+  goToForgotPassword() {
+    this.router.navigateByUrl('/forgot-password');
   }
 }

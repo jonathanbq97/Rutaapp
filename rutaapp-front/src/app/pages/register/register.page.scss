@@ -1,0 +1,53 @@
+.auth-card.wide {
+  max-width: 640px;
+}
+
+.role-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px 0 14px;
+  padding: 4px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  button {
+    padding: 11px 8px;
+    font: inherit;
+    font-size: 14px;
+    color: inherit;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    border-radius: 12px;
+
+    &.on {
+      font-weight: 600;
+      background: rgba(47, 107, 255, 0.35);
+      box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.7);
+    }
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.auth-card.wide .grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+@media (max-width: 600px) {
+  .auth-card.wide .grid {
+    grid-template-columns: 1fr;
+  }
+}
